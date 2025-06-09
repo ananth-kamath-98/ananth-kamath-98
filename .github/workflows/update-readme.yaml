@@ -1,4 +1,6 @@
 name: Update README with latest Medium post
+permissions:
+  contents: write
 on:
   workflow_dispatch:
   schedule:
