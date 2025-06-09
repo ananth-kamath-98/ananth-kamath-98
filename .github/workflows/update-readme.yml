@@ -1,0 +1,34 @@
+name: Update README with latest Medium post
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 * * * *'  # hourly
+jobs:
+  sync-medium:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Fetch latest Medium post
+        run: |
+          TITLE=$(curl -s https://medium.com/feed/@ananthkamath98 \
+            | grep -m1 '<title>' | sed -E 's/.*<title>(.*)<\/title>.*/\1/')
+          URL=$(curl -s https://medium.com/feed/@ananthkamath98 \
+            | grep -m1 '<link>' | sed -E 's/.*<link>(.*)<\/link>.*/\1/')
+          echo "### 📝 Latest on Medium" > latest.md
+          echo "" >> latest.md
+          echo "**[$TITLE]($URL)**" >> latest.md
+
+      - name: Update README section
+        run: |
+          # replace the block between <!-- MEDIUM-START --> and <!-- MEDIUM-END -->
+          awk '/<!-- MEDIUM-START -->/{print;system("cat latest.md");skip=1;next}
+               /<!-- MEDIUM-END -->/{skip=0}
+               !skip' README.md > README.new
+          mv README.new README.md
+
+      - uses: EndBug/add-and-commit@v9
+        with:
+          author_name: GitHub Action
+          author_email: ananth-kamath-98@github.com
+          message: "chore: update latest Medium post"
