@@ -1,36 +1,57 @@
 name: Update README with latest Medium post
+
+# === 1) Grant write access to the repo contents
 permissions:
   contents: write
+
 on:
   workflow_dispatch:
+  push:
+    branches: [ main ]
   schedule:
-    - cron: '0 * * * *'  # hourly
+    - cron: '0 * * * *'
+
 jobs:
   sync-medium:
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v3
+      # === 2) Checkout with credentials persisted
+      - name: Checkout repo
+        uses: actions/checkout@v3
+        with:
+          # this makes sure $GITHUB_TOKEN is written into .git/config
+          persist-credentials: true  
 
       - name: Fetch latest Medium post
+        id: fetch
         run: |
-          TITLE=$(curl -s https://medium.com/feed/@ananthkamath98 \
-            | grep -m1 '<title>' | sed -E 's/.*<title>(.*)<\/title>.*/\1/')
-          URL=$(curl -s https://medium.com/feed/@ananthkamath98 \
-            | grep -m1 '<link>' | sed -E 's/.*<link>(.*)<\/link>.*/\1/')
-          echo "### 📝 Latest on Medium" > latest.md
-          echo "" >> latest.md
-          echo "**[$TITLE]($URL)**" >> latest.md
+          FEED="https://medium.com/feed/@yourusername"
+          TITLE=$(curl -s "$FEED" \
+            | grep -m1 '<title>' \
+            | sed -E 's/.*<title>(.*)<\/title>.*/\1/')
+          URL=$(curl -s "$FEED" \
+            | grep -m1 '<link>' \
+            | sed -E 's/.*<link>(.*)<\/link>.*/\1/')
+          echo "title=$TITLE" >> $GITHUB_OUTPUT
+          echo "url=$URL"   >> $GITHUB_OUTPUT
 
-      - name: Update README section
+      - name: Update README placeholder
         run: |
-          # replace the block between <!-- MEDIUM-START --> and <!-- MEDIUM-END -->
-          awk '/<!-- MEDIUM-START -->/{print;system("cat latest.md");skip=1;next}
-               /<!-- MEDIUM-END -->/{skip=0}
-               !skip' README.md > README.new
-          mv README.new README.md
+          awk '/<!-- MEDIUM-START -->/{ print;
+               print "**[" ENV_TITLE "](" ENV_URL ")**"; skip=1; next }
+               /<!-- MEDIUM-END -->/{ skip=0 }
+               !skip' \
+            README.md > README.tmp && mv README.tmp README.md
+        env:
+          ENV_TITLE: ${{ steps.fetch.outputs.title }}
+          ENV_URL:   ${{ steps.fetch.outputs.url }}
 
-      - uses: EndBug/add-and-commit@v9
+      - name: Commit & push changes
+        uses: EndBug/add-and-commit@v9
         with:
+          # explicitly tell it which token to use
           author_name: GitHub Action
-          author_email: ananth-kamath-98@github.com
-          message: "chore: update latest Medium post"
+          author_email: action@github.com
+          message: update latest Medium post
+          token: ${{ secrets.GITHUB_TOKEN }}
