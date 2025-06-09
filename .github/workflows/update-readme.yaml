@@ -1,57 +1,57 @@
+# .github/workflows/update-medium.yml
 name: Update README with latest Medium post
 
-# === 1) Grant write access to the repo contents
 permissions:
-  contents: write
+  contents: write    # grant write access so we can push changes
 
 on:
-  workflow_dispatch:
+  workflow_dispatch:         # manual trigger in Actions UI
   push:
-    branches: [ main ]
+    branches: [ main ] 
   schedule:
-    - cron: '0 * * * *'
+    - cron: '0 * * * *' 
 
 jobs:
   sync-medium:
     runs-on: ubuntu-latest
 
     steps:
-      # === 2) Checkout with credentials persisted
       - name: Checkout repo
         uses: actions/checkout@v3
         with:
-          # this makes sure $GITHUB_TOKEN is written into .git/config
-          persist-credentials: true  
+          persist-credentials: true   # ensures GITHUB_TOKEN is used for pushes
 
       - name: Fetch latest Medium post
         id: fetch
         run: |
           FEED="https://medium.com/feed/@yourusername"
-          TITLE=$(curl -s "$FEED" \
-            | grep -m1 '<title>' \
-            | sed -E 's/.*<title>(.*)<\/title>.*/\1/')
-          URL=$(curl -s "$FEED" \
-            | grep -m1 '<link>' \
-            | sed -E 's/.*<link>(.*)<\/link>.*/\1/')
+
+          # grab only the first <item>…</item> block
+          FIRST_ITEM=$(curl -s "$FEED" \
+            | awk '/<item>/{flag=1} flag; /<\/item>/{print; exit}')
+
+          # extract the title inside CDATA
+          TITLE=$(echo "$FIRST_ITEM" \
+            | sed -nEn 's/.*<title><!\[CDATA\[(.*)\]\]><\/title>.*/\1/p')
+
+          # extract the link URL
+          URL=$(echo "$FIRST_ITEM" \
+            | sed -nEn 's/.*<link>(https?:\/\/[^<]+)<\/link>.*/\1/p')
+
           echo "title=$TITLE" >> $GITHUB_OUTPUT
           echo "url=$URL"   >> $GITHUB_OUTPUT
 
       - name: Update README placeholder
         run: |
-          awk '/<!-- MEDIUM-START -->/{ print;
-               print "**[" ENV_TITLE "](" ENV_URL ")**"; skip=1; next }
-               /<!-- MEDIUM-END -->/{ skip=0 }
-               !skip' \
-            README.md > README.tmp && mv README.tmp README.md
-        env:
-          ENV_TITLE: ${{ steps.fetch.outputs.title }}
-          ENV_URL:   ${{ steps.fetch.outputs.url }}
+          # delete old injected lines (but keep the markers)
+          sed -i '/<!-- MEDIUM-START -->/,/<!-- MEDIUM-END -->/{//!d}' README.md
+          # insert new markdown link after the start marker
+          sed -i "/<!-- MEDIUM-START -->/a **[${{ steps.fetch.outputs.title }}](${{ steps.fetch.outputs.url }})**" README.md
 
       - name: Commit & push changes
         uses: EndBug/add-and-commit@v9
         with:
-          # explicitly tell it which token to use
           author_name: GitHub Action
           author_email: action@github.com
           message: update latest Medium post
-          token: ${{ secrets.GITHUB_TOKEN }}
+          github_token: ${{ secrets.GITHUB_TOKEN }}
