@@ -1,9 +1,6 @@
 [![Typing SVG](https://readme-typing-svg.demolab.com?font=Merriweather&size=30&pause=200&color=FF4500E1&width=435&lines=Hi%2C+I'm+Ananth+Kamath;Software+Engineer;CS+Grad+Student+%40+RIT)](https://git.io/typing-svg)
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="https://octodex.github.com/images/inspectocat.jpg">
-  <img alt="GIF" align="right" height="160px" src="https://octodex.github.com/images/inspectocat.jpg">
-</picture>
+<img align="right" alt="GIF" height="160px" src="https://octodex.github.com/images/inspectocat.jpg" />
 
 I’m a software engineer specializing in Java, Spring Boot, and backend performance optimization—passionate about identifying and solving processing bottlenecks to build scalable, reliable systems.
 When I’m not fine-tuning pipelines, you’ll find me geeking out over Tolkien lore, brewing coffee or exploring real-time messaging frameworks.
@@ -63,7 +60,7 @@ When I’m not fine-tuning pipelines, you’ll find me geeking out over Tolkien 
 
 ### Spotify Playing 🎧
 
-[![Spotify](https://novatorem-kyzbk7wxl-bardiesel.vercel.app/api/spotify)](https://open.spotify.com/user/31doy22mvycwt43tx6ajtqe7tdtu)
+[![spotify-github-profile](https://spotify-github-profile.kittinanx.com/api/view?uid=ananth_kamath&cover_image=true&theme=novatorem&show_offline=false&background_color=121212&interchange=true&bar_color=53b14f&bar_color_cover=true)](https://spotify-github-profile.kittinanx.com/api/view?uid=ananth_kamath&redirect=true)
 
 ---
 
