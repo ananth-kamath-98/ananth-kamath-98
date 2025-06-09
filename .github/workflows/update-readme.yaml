@@ -24,7 +24,7 @@ jobs:
       - name: Fetch latest Medium post
         id: fetch
         run: |
-          FEED="https://medium.com/feed/@yourusername"
+          FEED="https://medium.com/feed/@ananthkamath98"
 
           # grab only the first <item>…</item> block
           FIRST_ITEM=$(curl -s "$FEED" \
