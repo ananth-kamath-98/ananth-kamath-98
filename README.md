@@ -13,7 +13,7 @@ When I’m not fine-tuning pipelines, you’ll find me geeking out over Tolkien 
 ---
 ## 📝 Latest on Medium  
 <!-- MEDIUM-START -->
-**[Deconstructing Real-Time Bidding: A Lightweight Approach](https://medium.com/@ananthkamath98/deconstructing-real-time-bidding-a-lightweight-approach-3d4f727f1d7d?source=rss-ceaabb8e85e4------2)**
+**[Everyday Java Patterns from My Code Log](https://medium.com/@ananthkamath98/everyday-java-patterns-from-my-code-log-f06002254200?source=rss-ceaabb8e85e4------2)**
 <!-- MEDIUM-END -->
 ---
 
