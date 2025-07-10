@@ -13,7 +13,7 @@ When I’m not fine-tuning pipelines, you’ll find me geeking out over Tolkien 
 ---
 ## 📝 Latest on Medium  
 <!-- MEDIUM-START -->
-**[]()**
+**[Everyday Java Patterns from My Code Log](https://medium.com/@ananthkamath98/everyday-java-patterns-from-my-code-log-f06002254200?source=rss-ceaabb8e85e4------2)**
 <!-- MEDIUM-END -->
 ---
 
